@@ -1,18 +1,27 @@
 
 import React, { useState } from "react";
 
+interface TodoProps {
+  id: string;
+  desc: string;
+  completed: boolean;
+  toggleCompleted: (id: string) => void;
+  editTodo: (id: string, desc: string) => void;
+  deleteTodo: (id: string) => void;
+}
 
-const Todo = ({id, desc, completed, toggleCompleted, editTask, deleteTask}) => {
+
+const Todo = ({id, desc, completed, toggleCompleted, editTodo, deleteTodo}: TodoProps) => {
 
   const [isEditing, setEditing] = useState(false);
   const [input, setInput] = useState('');
 
-  function handleChange(e) {
-    setInput(e.target.value);
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setInput(event.target.value);
   }
-  function handleSubmit(e) {
-    e.preventDefault();
-    editTask(id, input);
+  function handleSubmit(event: React.FormEvent<HTMLFormElement> ) {
+    event.preventDefault();
+    editTodo(id, input);
     setInput("");
     setEditing(false);
   }
@@ -28,10 +37,10 @@ const Todo = ({id, desc, completed, toggleCompleted, editTask, deleteTask}) => {
       {desc}
 
       <div className="btn-group" onClick={() => setEditing(true)}>
-        <button type="button" onClick={() => editTask(id, desc)}>
+        <button type="button" onClick={() => editTodo(id, desc)}>
           Edit
         </button>
-        <button type="button" onClick={() => deleteTask(id)}>
+        <button type="button" onClick={() => deleteTodo(id)}>
           Delete
         </button>
       </div>

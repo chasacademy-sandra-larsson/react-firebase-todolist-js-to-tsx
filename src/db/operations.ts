@@ -1,22 +1,18 @@
+
 import {
-    getFirestore,
     collection,
     getDocs,
-    onSnapshot,
     addDoc,
     deleteDoc,
     doc,
-    getDoc,
     updateDoc,
-    query,
-    where,
   } from "firebase/firestore";
   
   import db from "./firebase";
-  
-  
+  import { ITodo, INewTodo } from "../types/Todo.types";
+
   // Create
-  export const addTodosDB = async (todo) => {
+  export const addTodosDB = async (todo: INewTodo): Promise<string | undefined> => {
     try {
       const docRef = await addDoc(collection(db, "todos"), todo);
       console.log("Document written with ID: ", docRef.id);
@@ -27,13 +23,13 @@ import {
   };
   
   // Read
-  export const fetchFromDB = async () => {
+  export const fetchFromDB = async (): Promise<ITodo[]> => {
     try {
       const querySnapshot = await getDocs(collection(db, "todos"));
       const docs = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as ITodo[];
       return docs;
     } catch (error) {
       console.error("Error fetching documents: ", error);
@@ -43,7 +39,7 @@ import {
   };
   
   // Update
-  export const updateTodosDB = async (id, todo) => {
+  export const updateTodosDB = async (id: string, todo: INewTodo): Promise<void> => {
     try {
       const docRef = doc(db, "todos", id);
       await updateDoc(docRef, todo);
@@ -53,7 +49,7 @@ import {
   };
   
   // Delete
-  export const deleteTodoDB = async (id) => {
+  export const deleteTodoDB = async (id:string): Promise<void> => {
     try {
       const docRef = doc(db, "todos", id);
       await deleteDoc(docRef);

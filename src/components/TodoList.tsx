@@ -1,25 +1,28 @@
+
 import React, { useState, useEffect } from "react";
 import Todo from "./Todo";
 import { fetchFromDB, addTodosDB, updateTodosDB, deleteTodoDB } from "../db/operations.js";
 
 
+import { ITodo , INewTodo} from "../types/Todo.types";
+
 const TodoList = () => {
 
   const [input, setInput] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<ITodo[]>([]);
   const [toggled, setToggle] = useState(false);
 
-  const handleChange = (e) => {
-    setInput(e.target.value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(event.target.value);
   };
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     addTodo();
     setInput("");
   }
 
-  function toggleCompleted(id) {
+  function toggleCompleted(id: string) {
     toggled ? setToggle(false) : setToggle(true);
 
     const updatedTasks = todos.map((item) => {
@@ -41,7 +44,7 @@ const TodoList = () => {
   }, []);
 
   const addTodo = async () => {
-    const newTodo = {
+    const newTodo: INewTodo = {
       desc: input,
       completed: false,
     };
@@ -60,7 +63,7 @@ const TodoList = () => {
     }
   }
 
-  function editTodo(id, newDesc) {
+  function editTodo(id:string, newDesc: string) {
     const editedTodosList = todos.map((item) => {
       if (id === item.id) {
         updateTodosDB(id, { ...item, desc: newDesc });
@@ -72,7 +75,7 @@ const TodoList = () => {
     setTodos(editedTodosList);
   }
 
-  function deleteTodo(id) {
+  function deleteTodo(id: string) {
     const remainingTasks = todos.filter((item) => id !== item.id);
     deleteTodoDB(id);
     setTodos(remainingTasks);
@@ -98,8 +101,8 @@ const TodoList = () => {
             desc={item.desc}
             completed={item.completed}
             toggleCompleted={toggleCompleted}
-            editTask={editTodo}
-            deleteTask={deleteTodo}
+            editTodo={editTodo}
+            deleteTodo={deleteTodo}
           />
         ))}
       </ul>
